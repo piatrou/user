@@ -1,0 +1,12 @@
+---
+USER_DEFAULT_KEY_STATE: present
+USER_HOME_DIR: /home
+
+USER_PATH_DEFAULT:
+    - $HOME/.bin/
+    - $HOME/.local/bin
+
+USER_VENV_NAME: app
+USER_VENV_PATH: $HOME
+USER_EDITOR: vim
+USER_SHELL: bash

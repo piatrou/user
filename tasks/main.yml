@@ -1,0 +1,56 @@
+---
+- name: User groups {{ ', '.join(USER_PP_GROUP_LIST) }} created
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ USER_PP_GROUP_LIST }}"
+  tags:
+    - user
+    - group
+
+- name: User {{ user_name }} created
+  user:
+    name: "{{ user_name }}"
+    shell: /bin/{{ USER_SHELL }}
+    groups: "{{ ','.join(USER_PP_GROUP_LIST) }}"
+    group: "{{ USER_PP_BASE }}"
+  tags:
+    - user
+    - group
+
+- name: .bashrc created
+  template:
+    src: .{{ USER_SHELL }}rc.j2
+    dest: "{{ USER_HOME_DIR }}/{{ user_name }}/.{{ USER_SHELL }}rc"
+    owner: "{{ user_name }}"
+    group: "{{ USER_PP_BASE }}"
+    mode: '0644'
+  tags:
+    - user
+    - rc
+
+- name: .ssh folder created
+  file:
+    path: "{{ USER_HOME_DIR }}/{{ user_name }}/.ssh"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ USER_PP_BASE }}"
+    mode: '0700'
+  tags:
+    - user
+    - keys
+
+- name: copy authorized keys
+  lineinfile:
+    path: "{{ USER_HOME_DIR }}/{{ user_name }}/.ssh/authorized_keys"
+    line: "{{ item.pub if 'pub' in item else item }}"
+    state: "{{ item.state if 'state' in item else USER_DEFAULT_KEY_STATE }}"
+    owner: "{{ user_name }}"
+    group: "{{ USER_PP_BASE }}"
+    mode: '0600'
+    create: yes
+  loop: "{{ keys }}"
+  when: keys is defined
+  tags:
+    - user
+    - keys

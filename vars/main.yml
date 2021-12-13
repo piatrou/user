@@ -1,0 +1,6 @@
+---
+USER_PP_ADDITIONAL: "{{ user_group.additional if user_group is defined and 'additional' in user_group else [] }}"
+USER_PP_BASE: "{{ user_group.base if user_group is defined and 'base' in user_group else user_name }}"
+
+USER_PP_GROUP_LIST: "{{ [USER_PP_BASE] + USER_PP_ADDITIONAL }}"
+USER_PP_PATH: "{{ USER_PATH_DEFAULT + user_path if user_path is defined else USER_PATH_DEFAULT }}"
