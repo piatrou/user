@@ -18,6 +18,14 @@
     - user
     - group
 
+- name: user directory created
+  file:
+    path: "{{ USER_HOME_DIR }}/{{ user_name }}"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ USER_PP_BASE }}"
+    mode: '0750'
+
 - name: .bashrc created
   template:
     src: .{{ USER_SHELL }}rc.j2
